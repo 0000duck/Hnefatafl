@@ -36,6 +36,9 @@ namespace Hnefatafl {
 
             InitVariablePipe();
 
+            /*this.GenerateVAO();
+            this.GenerateVBOs();*/
+
         }
 
         public override void SetPVMMatrix( ref Matrix4 pvm ) {
@@ -52,7 +55,7 @@ namespace Hnefatafl {
 
         public override void Prepare() {
             GL.UseProgram(this.id);
-            
+
             this.GenerateVAO();
             this.GenerateVBOs();
             this.BindVAO();

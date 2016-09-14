@@ -13,9 +13,6 @@ namespace Hnefatafl {
 
         public static View view;
 
-        Texture2D texture;
-        int vao;
-        int vbo;
         List<GameObject> objects;
 
         public Game (int width, int height) :base(width, height){
@@ -48,12 +45,7 @@ namespace Hnefatafl {
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
 
-            try {
-                texture = ContentLoader.LoadTexture("grass.jpg");
-            } catch (Exception ex) {
-                Console.WriteLine(ex.Message);
-                this.Exit();
-            }
+            
 
         }
 
