@@ -53,6 +53,7 @@ namespace Hnefatafl {
             RenderIBO();
         }
 
+        [Obsolete("Render is Obsolete, use RenderIBO instead.")]
         public void Render() {
             this.Shader.Prepare();
 
