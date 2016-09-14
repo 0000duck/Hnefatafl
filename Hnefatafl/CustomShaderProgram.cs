@@ -8,7 +8,7 @@ using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 
 namespace Hnefatafl {
-    abstract class CustomShaderProgram {
+    public abstract class CustomShaderProgram {
         protected int id;
         protected Dictionary<string, int> variablePipe;
         protected Matrix4 pvm;
@@ -46,12 +46,22 @@ namespace Hnefatafl {
         }
 
 
-        public abstract void setPVMMatrix( ref Matrix4 pvm );
+        public abstract void SetPVMMatrix( ref Matrix4 pvm );
+        public abstract void LoadUniforms( ref GameObject renderedObject );
         public abstract void InitVariablePipe();
         public abstract void Init();
         public abstract void Prepare();
-        public abstract void PostMeshAttribution();
         public abstract void Cleanup();
+        public abstract void EndRender();
 
+        public abstract void GenerateVBOs();
+        public abstract void InitVBOs(Mesh m);
+        public abstract void SetupVBOPointers();
+        public virtual void GenerateVAO() {
+            GL.GenVertexArrays(1, out this.vao);
+        }
+        public virtual void BindVAO() {
+            GL.BindVertexArray(this.vao);
+        }
     }
 }

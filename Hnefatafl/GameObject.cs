@@ -9,20 +9,17 @@ using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 
 namespace Hnefatafl {
-    class GameObject {
+    public class GameObject {
 
         public Vector3 position;
-
-        //in radians, + = clockwise
         public double rotation;
-
         public double scale;
-
         public Matrix4 modelmatrix;
-
         public RenderingComponent Renderer;
 
-
+        public Func<GameObject, int> Update {
+            get; set;
+        }
 
 
 
@@ -38,11 +35,6 @@ namespace Hnefatafl {
 
         }
 
-        public void Update() {
-            // this.position.X += 0.001f;
-             //this.position.Z += 0.01f;
-            //this.rotation += 0.01f;
-        }
 
         public void PostUpdate() {
 

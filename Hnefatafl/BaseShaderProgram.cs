@@ -11,7 +11,7 @@ namespace Hnefatafl {
     class BaseShaderProgram : CustomShaderProgram{
 
         public BaseShaderProgram(string vertpath, string fragpath): base(vertpath, fragpath) {
-            this.vbos = new int[1];
+            this.vbos = new int[3];
         }
 
         
@@ -38,42 +38,107 @@ namespace Hnefatafl {
 
         }
 
-        public override void setPVMMatrix( ref Matrix4 pvm ) {
-            //GL.UniformMatrix4( variablePipe["pvm"], false, ref pvm );
+        public override void SetPVMMatrix( ref Matrix4 pvm ) {
+            GL.UniformMatrix4( variablePipe["pvm"], false, ref pvm );
+
+        }
+
+        public override void LoadUniforms( ref GameObject redneredObject) {
+            Vector4 c = new Vector4(0f, 0.5f, 0.5f, 1f);
+
+            GL.Uniform4(this.VariablePipe["i_color"], c);
 
         }
 
         public override void Prepare() {
-            ShaderManager.LinkProgram( this );
             GL.UseProgram(this.id);
+            
+            this.GenerateVAO();
+            this.GenerateVBOs();
+            this.BindVAO();
 
-
-            GL.GenVertexArrays(1, out this.vao);
-            GL.GenBuffers(1, out this.vbos[0]);
-
-            GL.BindVertexArray(vao);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, vbos[0]);
-
+            //enable the various types of buffers
+            GL.EnableClientState(ArrayCap.VertexArray);//MV PREPARE
+            GL.EnableClientState(ArrayCap.NormalArray);//MV PREPARE
 
 
         }
 
-        public override void PostMeshAttribution() {
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 0, 0);
-            GL.EnableVertexAttribArray(0);
+        public override void GenerateVBOs() {
+            GL.GenBuffers(3, this.vbos);
+        }
+
+        public override void InitVBOs(Mesh mesh) {
+            //positions
+            GL.BindBuffer(BufferTarget.ArrayBuffer, this.vbos[0]);
+            GL.BufferData(BufferTarget.ArrayBuffer,
+                (IntPtr)(mesh.Positions.Length * Vector3.SizeInBytes),//pos.size
+                mesh.Positions,//pos
+                BufferUsageHint.StaticDraw);
+
+            //normals
+            GL.BindBuffer(BufferTarget.ArrayBuffer, this.vbos[1]);
+            GL.BufferData(BufferTarget.ArrayBuffer,
+                (IntPtr)(mesh.Normals.Length * Vector3.SizeInBytes),//norm.size
+                mesh.Normals,//norm
+                BufferUsageHint.StaticDraw);
+
+            //texture
+            /*GL.BindBuffer(BufferTarget.ArrayBuffer, VBO[2]);
+            GL.BufferData(BufferTarget.ArrayBuffer,
+                (IntPtr)textures.Length,//tex.size
+                textures,//tex
+                BufferUsageHint.StaticDraw);*/
+
+        }
+
+        public override void SetupVBOPointers() {
+            GL.BindBuffer(BufferTarget.ArrayBuffer, this.vbos[0]);
+            GL.VertexPointer(
+                3,
+                VertexPointerType.Float,
+                0,
+                0);
+            GL.VertexAttribPointer(this.VariablePipe["in_position"], 3, VertexAttribPointerType.Float, false, 0, 0);
+            GL.EnableVertexAttribArray(this.VariablePipe["in_position"]);
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, this.vbos[1]);
+            GL.NormalPointer(
+                NormalPointerType.Float,
+                0,
+                0
+                );
+            GL.VertexAttribPointer(this.VariablePipe["in_normal"], 3, VertexAttribPointerType.Float, false, 0, 0);
+            GL.EnableVertexAttribArray(this.VariablePipe["in_normal"]);
+
+            /*GL.BindBuffer(BufferTarget.ArrayBuffer, this.vbos[2);
+            GL.TexCoordPointer(2,
+                TexCoordPointerType.Float,
+                textures.Length,
+                6);
+            GL.VertexAttribPointer(this.VariablePipe["in_texCoord"], 2, VertexAttribPointerType.Float, false, 0, 0);
+            GL.EnableVertexAttribArray(this.VariablePipe["in_texCoord"]);*/
+        }
 
 
+        public override void EndRender() {
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+
+            GL.DisableClientState(ArrayCap.VertexArray);
+            GL.DisableClientState(ArrayCap.NormalArray);
+
+            GL.EnableVertexAttribArray(this.VariablePipe["in_position"]);
+            GL.EnableVertexAttribArray(this.VariablePipe["in_normal"]);
         }
 
         public override void Cleanup() {
-            GL.DisableVertexAttribArray(0);
+            this.EndRender();
 
             GL.DeleteProgram(this.ID);
             GL.DeleteVertexArray(this.vao);
             
-            foreach( int vbo in vbos) {
-                GL.DeleteBuffer(vbo);
-            }
+            GL.DeleteBuffers(this.vbos.Length, this.vbos);
         }
 
     }

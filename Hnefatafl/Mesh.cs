@@ -8,8 +8,20 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace Hnefatafl {
-    class Mesh {
+    public class Mesh {
         public Vector3[] Positions {
+            get;
+            set;
+        }
+        public Vector3[] Normals {
+            get;
+            set;
+        }
+        public Vector4[] Colors {
+            get;
+            set;
+        }
+        public Vector2[] TexCoords {
             get;
             set;
         }

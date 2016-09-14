@@ -27,27 +27,19 @@ namespace Hnefatafl {
             view = new View(new Vector3(0,0,0), 1, 0);
             objects = new List<GameObject>();
 
-            GameObject testObj = new GameObject(Vector3.Zero);
-            Vector3[] positions = {
-                new Vector3(0,0,0),
-                new Vector3(1,0,0),
-                new Vector3(1,1,1),
-                new Vector3(0,1,1)
-                
-            };
-            testObj.Renderer.Mesh.Positions = positions;
-            testObj.Renderer.Shader = new BaseShaderProgram("baseVertex.txt", "baseFrag.txt");
-            objects.Add(testObj);
+            TestObject testObj = new TestObject(Vector3.Zero);
+            TestObject testObj2 = new TestObject(new Vector3(-0.5f,-0.5f,0f));
 
-            GameObject testObj2 = new GameObject(new Vector3(-0.5f,-0.5f,0f));
-            Vector3[] positions2 = {
-                new Vector3(0, 0, 0),
-                new Vector3(-0.5f, 0, 0),
-                new Vector3(-0.5f, -0.5f, 0),
-                new Vector3(0, -0.5f, 0)
+            testObj.Update = (obj) => {
+                obj.position.X += 0.001f;
+                return 0;
             };
-            testObj2.Renderer.Mesh.Positions = positions2;
-            testObj2.Renderer.Shader = new BaseShaderProgram("baseVertex.txt", "baseFrag.txt");
+            testObj2.Update = (obj) => {
+                obj.position.X -= 0.001f;
+                return 0;
+            };
+
+            objects.Add(testObj);
             objects.Add(testObj2);
             
 
@@ -59,6 +51,7 @@ namespace Hnefatafl {
             try {
                 texture = ContentLoader.LoadTexture("grass.jpg");
             } catch (Exception ex) {
+                Console.WriteLine(ex.Message);
                 this.Exit();
             }
 
@@ -67,15 +60,11 @@ namespace Hnefatafl {
         protected override void OnUpdateFrame(FrameEventArgs e) {
             base.OnUpdateFrame(e);
 
-           // GL.MatrixMode(MatrixMode.Projection);
-           // //GL.LoadIdentity();
-            //GL.LoadMatrix(ref view.projectionmatrix);
-            //GL.Ortho(0, this.Width, this.Height, 0, 0.1f, 100f);
 
             view.Update();
             view.ApplyTransform();
             foreach (GameObject obj in objects) {
-                obj.Update();
+                obj.Update(obj);
                 obj.ApplyTransform();
             }
 

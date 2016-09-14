@@ -45,7 +45,6 @@ namespace Hnefatafl {
             GL.GetShader( address, ShaderParameter.CompileStatus, out status );
             if (status != 1) {
                 Console.WriteLine( "{0} Compile failed: status code: {1}", path, status );
-                int length;
                 string log;
                 log = GL.GetShaderInfoLog(address);
                 Console.WriteLine("\t" + log);

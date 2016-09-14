@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Hnefatafl {
-    abstract class Component {
+    public abstract class Component {
         private static int COMPONENT_UID = 0;
 
         protected GameObject parent;
