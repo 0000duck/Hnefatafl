@@ -1,0 +1,29 @@
+#version 330
+
+in vec3 in_position;
+in vec3 in_normal;
+
+uniform mat4 pvm;
+uniform vec4 i_color;
+
+float fov = 90.0;
+float ratio = 640/480f;
+float znear = 0.1;
+float zfar = 1000.0;
+
+
+mat4 frustum = mat4(
+    vec4( (1/tan(fov)), 0, 0, 0),
+    vec4( 0, (ratio/tan(fov)), 0, 0),
+    vec4( 0, 0,  (zfar + znear)/(zfar-znear), 1),
+    vec4( 0, 0, -(2*znear*zfar/(zfar-znear)), 0)
+
+);
+
+out vec4 color;
+
+void main(){
+	gl_Position =  pvm *  vec4(in_position, 1.0);
+    color =  /*i_color;//*/vec4(in_normal, 1f);
+	
+}
