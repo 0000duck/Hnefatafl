@@ -24,15 +24,30 @@ namespace Hnefatafl {
             view = new View(new Vector3(0,0,0), 1, 0);
             objects = new List<GameObject>();
 
+            
+
             TestObject testObj = new TestObject(Vector3.Zero);
             TestObject testObj2 = new TestObject(new Vector3(-0.5f,-0.5f,0f));
 
+            testObj.forceVector = new Vector3(0.001f, 0, 0);
+            testObj2.forceVector = new Vector3(-0.001f, 0, 0);
+
             testObj.Update = (obj) => {
-                obj.position.X += 0.001f;
+                if (obj.position.X > 1 || obj.position.X < -1) {
+                    obj.forceVector.X = -obj.forceVector.X;
+                }
+
+                obj.position += obj.forceVector;
+
                 return 0;
             };
             testObj2.Update = (obj) => {
-                obj.position.X -= 0.001f;
+                if (obj.position.X > 1 || obj.position.X < -1) {
+                    obj.forceVector.X = -obj.forceVector.X;
+                }
+
+                obj.position += obj.forceVector;
+
                 return 0;
             };
 

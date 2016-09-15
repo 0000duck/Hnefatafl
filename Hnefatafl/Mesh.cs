@@ -26,5 +26,9 @@ namespace Hnefatafl {
             set;
         }
 
+        public int[] Indices {
+            get;
+            set;
+        }
     }
 }

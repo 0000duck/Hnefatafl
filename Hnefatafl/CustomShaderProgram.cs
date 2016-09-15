@@ -15,6 +15,11 @@ namespace Hnefatafl {
         protected int vao;
         protected int[] vbos;
 
+        public string Name {
+            get;
+            private set;
+        }
+
 
         public int ID {
             get {
@@ -30,11 +35,15 @@ namespace Hnefatafl {
             }
         }
 
-        public CustomShaderProgram(string vertexpath, string fragpath) {
-            this.id = ShaderManager.CreateShaderProgram(vertexpath, fragpath);
-            this.variablePipe = new Dictionary<string, int>();
+        public CustomShaderProgram(string vertexpath, string fragpath, string name){
 
-            Init();
+            if (ShaderManager.CompiledShaders.ContainsKey(name)) {
+                throw new Exception("Shader program with the name "+name+" already exists.");
+            }
+            this.id = ShaderManager.CreateShaderProgram(vertexpath, fragpath);
+            this.Name = name;
+            this.variablePipe = new Dictionary<string, int>();
+            ShaderManager.CompiledShaders.Add(this.Name, this);
 
         }
 

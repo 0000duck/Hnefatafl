@@ -11,7 +11,10 @@ using System.IO;
 
 namespace Hnefatafl {
     class ShaderManager {
-
+        public static Dictionary<string, CustomShaderProgram> CompiledShaders {
+            get;
+            private set;
+        } = new Dictionary<string, CustomShaderProgram>();
 
         public static int CreateShaderProgram(string vertexPath, string fragmentPath){
             int id = GL.CreateProgram();
@@ -21,6 +24,7 @@ namespace Hnefatafl {
             LoadShader(vertexPath, ShaderType.VertexShader, id, out vertid);
             LoadShader(fragmentPath, ShaderType.FragmentShader, id, out fragid);
 
+            
             return id;
 
         }

@@ -10,8 +10,11 @@ using System.Drawing;
 namespace Hnefatafl {
     class BaseShaderProgram : CustomShaderProgram{
 
-        public BaseShaderProgram(string vertpath, string fragpath): base(vertpath, fragpath) {
+        public BaseShaderProgram(string vertpath, string fragpath): base(vertpath, fragpath, "BaseShader") {
             this.vbos = new int[3];
+
+            this.Init();
+            
         }
 
         
@@ -36,8 +39,10 @@ namespace Hnefatafl {
 
             InitVariablePipe();
 
-            /*this.GenerateVAO();
-            this.GenerateVBOs();*/
+
+
+            this.GenerateVAO();
+            this.GenerateVBOs();
 
         }
 
@@ -56,15 +61,14 @@ namespace Hnefatafl {
         public override void Prepare() {
             GL.UseProgram(this.id);
 
-            this.GenerateVAO();
-            this.GenerateVBOs();
             this.BindVAO();
 
             //enable the various types of buffers
             GL.EnableClientState(ArrayCap.VertexArray);//MV PREPARE
             GL.EnableClientState(ArrayCap.NormalArray);//MV PREPARE
 
-
+            GL.EnableVertexAttribArray(this.VariablePipe["in_position"]);
+            GL.EnableVertexAttribArray(this.VariablePipe["in_normal"]);
         }
 
         public override void GenerateVBOs() {
@@ -131,16 +135,16 @@ namespace Hnefatafl {
             GL.DisableClientState(ArrayCap.VertexArray);
             GL.DisableClientState(ArrayCap.NormalArray);
 
-            GL.EnableVertexAttribArray(this.VariablePipe["in_position"]);
-            GL.EnableVertexAttribArray(this.VariablePipe["in_normal"]);
+            GL.DisableVertexAttribArray(this.VariablePipe["in_position"]);
+            GL.DisableVertexAttribArray(this.VariablePipe["in_normal"]);
         }
 
         public override void Cleanup() {
             this.EndRender();
 
             GL.DeleteProgram(this.ID);
+
             GL.DeleteVertexArray(this.vao);
-            
             GL.DeleteBuffers(this.vbos.Length, this.vbos);
         }
 

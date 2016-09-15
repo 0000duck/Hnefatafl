@@ -12,6 +12,7 @@ namespace Hnefatafl {
     public class GameObject {
 
         public Vector3 position;
+        public Vector3 forceVector;
         public double rotation;
         public double scale;
         public Matrix4 modelmatrix;
