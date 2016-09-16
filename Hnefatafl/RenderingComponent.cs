@@ -34,16 +34,11 @@ namespace Hnefatafl {
         }
         
         private void Render() {
-            //TODO Move bloc A to Shader
-
-            //this.Shader.Prepare(); //TO REDO
             this.Shader.Prepare();
             
-
+            //unless dynamic mesh
             //this.Shader.InitVBOs(this.Mesh);
-
-
-            //Index Buffer Object
+            
             GL.GenBuffers(1, out IBO);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, IBO);
             GL.BufferData(BufferTarget.ElementArrayBuffer,
@@ -53,26 +48,18 @@ namespace Hnefatafl {
 
             this.Shader.SetupVBOPointers();
             
-            Matrix4 pvm = /*Game.view.frustummatrix **/ Game.view.viewmatrix * this.parent.modelmatrix;
+            Matrix4 pvm = this.parent.modelmatrix * Game.view.viewmatrix * Game.view.frustummatrix;
 
             //set the uniforms of the shader
             this.Shader.SetPVMMatrix( ref pvm );
             this.Shader.LoadUniforms( ref this.parent );
-
             
-
-            
-
             //bind ibo & draw
-            //GL.BindBuffer(BufferTarget.ElementArrayBuffer, IBO);
             GL.DrawElements(PrimitiveType.Triangles, this.Mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
-            //GL.DrawArrays(PrimitiveType.Triangles, 0, positions.Length);
 
             //cleanup
             this.Shader.EndRender();
 
-            
-            
         }
     
         //to make the model move along the position of the object

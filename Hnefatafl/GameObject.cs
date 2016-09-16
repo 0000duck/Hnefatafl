@@ -42,13 +42,19 @@ namespace Hnefatafl {
         }
 
         public void ApplyTransform() {
-            this.modelmatrix = Matrix4.Identity;
+            //TODO make rotation 3-axis
+            this.modelmatrix =
+                Matrix4.CreateScale((float)this.scale) * Matrix4.CreateRotationX(0)
+                * Matrix4.CreateRotationY(0) * Matrix4.CreateRotationZ(0)
+                * Matrix4.CreateTranslation(this.position);
+                
+                /*Matrix4.Identity;
             this.modelmatrix = Matrix4.Mult(this.modelmatrix, Matrix4.CreateTranslation(position.X, position.Y, position.Z));
             this.modelmatrix = Matrix4.Mult(this.modelmatrix, Matrix4.CreateRotationZ((float)-rotation));
             this.modelmatrix = Matrix4.Mult(this.modelmatrix, Matrix4.CreateScale((float)scale, (float)scale, 1.0f));
+            */
+            //GL.MultMatrix(ref this.modelmatrix);
             
-            GL.MultMatrix(ref this.modelmatrix);
-
         }
 
 

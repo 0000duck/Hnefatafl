@@ -12,13 +12,7 @@ float znear = 0.1;
 float zfar = 1000.0;
 
 
-mat4 frustum = mat4(
-    vec4( (1/tan(fov)), 0, 0, 0),
-    vec4( 0, (ratio/tan(fov)), 0, 0),
-    vec4( 0, 0,  (zfar + znear)/(zfar-znear), 1),
-    vec4( 0, 0, -(2*znear*zfar/(zfar-znear)), 0)
 
-);
 
 out vec4 color;
 

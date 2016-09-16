@@ -21,7 +21,7 @@ namespace Hnefatafl {
             GL.Enable(EnableCap.DepthTest);
             GL.DepthFunc(DepthFunction.Less);
 
-            view = new View(new Vector3(0,0,0), 1, 0);
+            view = new View(new Vector3(0,0,-10f), 1, 0);
             objects = new List<GameObject>();
 
             
@@ -30,7 +30,7 @@ namespace Hnefatafl {
             TestObject testObj2 = new TestObject(new Vector3(-0.5f,-0.5f,0f));
 
             testObj.forceVector = new Vector3(0.001f, 0, 0);
-            testObj2.forceVector = new Vector3(-0.001f, 0, 0);
+            testObj2.forceVector = new Vector3(0, 0, 0.5f);
 
             testObj.Update = (obj) => {
                 if (obj.position.X > 1 || obj.position.X < -1) {
@@ -42,8 +42,8 @@ namespace Hnefatafl {
                 return 0;
             };
             testObj2.Update = (obj) => {
-                if (obj.position.X > 1 || obj.position.X < -1) {
-                    obj.forceVector.X = -obj.forceVector.X;
+                if (obj.position.Z > 8 || obj.position.Z < -8) {
+                    obj.forceVector.Z = -obj.forceVector.Z;
                 }
 
                 obj.position += obj.forceVector;
@@ -122,6 +122,7 @@ namespace Hnefatafl {
             // :(         
             //GL.MatrixMode(MatrixMode.Projection);
             //GL.LoadMatrix(ref view.projectionmatrix);
+            //GL.Frustum(-1, 1, -1, 1, 0.1f, 1000);
             //GL.LoadIdentity();
 
             /*GL.MatrixMode(MatrixMode.Modelview);

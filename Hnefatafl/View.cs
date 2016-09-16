@@ -21,10 +21,10 @@ namespace Hnefatafl {
         public double zoom;
 
         public Matrix4 viewmatrix;
-        public Matrix4 frustummatrix;
-        public float fov = 90f, 
+        public Matrix4 frustummatrix = Matrix4.Identity;
+        public float fov = (float)(Math.PI) /4f, 
             ratio = 640f/480f, 
-            znear = 0.1f, 
+            znear = 0.01f, 
             zfar = 1000f;
 
       
@@ -34,24 +34,29 @@ namespace Hnefatafl {
             this.zoom = startzoom;
             this.rotation = startrotation;
 
-            this.frustummatrix = new Matrix4(
-                new Vector4((1 / (float)Math.Tan(fov)), 0, 0, 0),
-                new Vector4(0, (ratio / (float)Math.Tan(fov)), 0, 0),
-                new Vector4(0, 0, (zfar + znear) / (zfar - znear), 1),
-                new Vector4(0, 0, -(2 * znear * zfar / (zfar - znear)), 0)
-           ) ;
-            Console.WriteLine(this.frustummatrix.ToString());
+
+            Matrix4.CreatePerspectiveFieldOfView(fov, ratio, znear, zfar, out this.frustummatrix);/*new Matrix4(
+                new Vector4( (1 / (float)Math.Tan(fov/2f))/ratio, 0, 0, 0),
+                new Vector4( 0, (1 / (float)Math.Tan(fov/2f)), 0, 0),
+                new Vector4( 0, 0, -(zfar + znear) / (zfar - znear), -(2 * znear * zfar / (zfar - znear))),
+                new Vector4( 0, 0, -1, 0)
+
+            ) ;*/
+
+            this.viewmatrix = Matrix4.LookAt(this.position, new Vector3(0, 0, 0), Vector3.UnitY);
         }
 
         public void Update() {
             //this.position.Z += 0.01f;
-           // this.position.X += 0.005f;
+            // this.position.X += 0.005f;
+            //this.rotation = (float)Math.PI/2f;
         }
 
         public void ApplyTransform() {
+            //TODO make rotation 3-axis
             Matrix4 transform = Matrix4.Identity;
             transform = Matrix4.Mult(transform, Matrix4.CreateTranslation(-position.X, -position.Y, position.Z));
-            transform = Matrix4.Mult(transform, Matrix4.CreateRotationZ((float)-rotation));
+            transform = Matrix4.Mult(transform, Matrix4.CreateRotationY((float)-rotation));
             transform = Matrix4.Mult(transform, Matrix4.CreateScale((float)zoom, (float)zoom, 1.0f));
 
 
