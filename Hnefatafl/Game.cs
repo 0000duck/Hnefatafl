@@ -20,16 +20,18 @@ namespace Hnefatafl {
             GL.Enable(EnableCap.Texture2D);
             GL.Enable(EnableCap.DepthTest);
             GL.DepthFunc(DepthFunction.Less);
+            GL.Enable(EnableCap.CullFace);
+            GL.CullFace(CullFaceMode.Back);
 
-            view = new View(new Vector3(0,0,-10f), 1, 0);
+            view = new View(new Vector3(0,0,-10f), new Vector3(0,0,0), 1);
             objects = new List<GameObject>();
 
             
 
-            TestObject testObj = new TestObject(Vector3.Zero);
-            TestObject testObj2 = new TestObject(new Vector3(-0.5f,-0.5f,0f));
+            TestObject testObj = new TestObject(new Vector3(3,0,0), Vector3.Zero);
+            TestObject testObj2 = new TestObject(new Vector3(-0.5f,-0.5f,0f), Vector3.Zero);
 
-            testObj.forceVector = new Vector3(0.001f, 0, 0);
+            testObj.forceVector  = new Vector3(0, 0, 0);
             testObj2.forceVector = new Vector3(0, 0, 0.5f);
 
             testObj.Update = (obj) => {
@@ -38,6 +40,8 @@ namespace Hnefatafl {
                 }
 
                 obj.position += obj.forceVector;
+                obj.rotation.Y += 0.05f;
+                obj.rotation.X += 0.05f;
 
                 return 0;
             };
@@ -47,6 +51,7 @@ namespace Hnefatafl {
                 }
 
                 obj.position += obj.forceVector;
+                
 
                 return 0;
             };

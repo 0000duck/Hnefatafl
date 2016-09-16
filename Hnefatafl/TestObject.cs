@@ -11,12 +11,12 @@ using OpenTK.Graphics.OpenGL;
 namespace Hnefatafl {
     public class TestObject : GameObject{
 
-        public TestObject(Vector3 position) : base(position) {
+        public TestObject(Vector3 position, Vector3 rotation) : base(position, rotation) {
             this.Renderer.Mesh.Positions = new Vector3[]{
                 new Vector3( 0.0f, 0.0f, 0.0f ),
                 new Vector3( 1.0f, 0.0f, 0.0f ),
                 new Vector3( 0.5f, 1.0f, 0.0f ),
-                new Vector3( 1.0f, 1.0f, 0.0f )
+                new Vector3( 1.0f, 1.0f, -1.0f )
             };
             this.Renderer.Mesh.Normals = new Vector3[]{
                 new Vector3(0.0f, 0.0f, 1.0f),

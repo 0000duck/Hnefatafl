@@ -13,7 +13,7 @@ namespace Hnefatafl {
 
         public Vector3 position;
         public Vector3 forceVector;
-        public double rotation;
+        public Vector3 rotation;
         public double scale;
         public Matrix4 modelmatrix;
         public RenderingComponent Renderer;
@@ -24,7 +24,7 @@ namespace Hnefatafl {
 
 
 
-        public GameObject(Vector3 startposition, double startscale = 1.0, double startrotation = 0.0) {
+        public GameObject(Vector3 startposition,  Vector3 startrotation, double startscale = 1.0) {
             this.position = startposition;
             this.scale = startscale;
             this.rotation = startrotation;
@@ -42,19 +42,11 @@ namespace Hnefatafl {
         }
 
         public void ApplyTransform() {
-            //TODO make rotation 3-axis
             this.modelmatrix =
-                Matrix4.CreateScale((float)this.scale) * Matrix4.CreateRotationX(0)
-                * Matrix4.CreateRotationY(0) * Matrix4.CreateRotationZ(0)
+                Matrix4.CreateScale((float)this.scale) * Matrix4.CreateRotationX(this.rotation.X)
+                * Matrix4.CreateRotationY(this.rotation.Y) * Matrix4.CreateRotationZ(this.rotation.Z)
                 * Matrix4.CreateTranslation(this.position);
                 
-                /*Matrix4.Identity;
-            this.modelmatrix = Matrix4.Mult(this.modelmatrix, Matrix4.CreateTranslation(position.X, position.Y, position.Z));
-            this.modelmatrix = Matrix4.Mult(this.modelmatrix, Matrix4.CreateRotationZ((float)-rotation));
-            this.modelmatrix = Matrix4.Mult(this.modelmatrix, Matrix4.CreateScale((float)scale, (float)scale, 1.0f));
-            */
-            //GL.MultMatrix(ref this.modelmatrix);
-            
         }
 
 
