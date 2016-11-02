@@ -46,17 +46,17 @@ namespace Hnefatafl {
                 return 0;
             };
             testObj2.Update = (obj) => {
-                if (obj.position.Z > 8 || obj.position.Z < -8) {
-                    obj.forceVector.Z = -obj.forceVector.Z;
-                }
-
-                obj.position += obj.forceVector;
+                /*if (obj.position.Z > 8 || obj.position.Z < -8) {
+                    obj.forceVector.Y = -obj.forceVector.Y;
+                }*/
+                
+                obj.rotation.Y += 0.05f;
                 
 
                 return 0;
             };
 
-            objects.Add(testObj);
+            //objects.Add(testObj);
             objects.Add(testObj2);
             
 
@@ -86,7 +86,6 @@ namespace Hnefatafl {
             
             this.SetRenderMode3D();
 
-            //GL.Viewport(0, 0, this.Width, this.Height);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             //GL.BindTexture(TextureTarget.Texture2D, texture.ID);

@@ -1,8 +1,12 @@
-#version 330
+#version 440
 
-in vec4 color;
-out vec4 o_color;
+in vec2 _uv;
+
+uniform sampler2D sampler;
+
+out vec4 out_color;
 
 void main(){
-    o_color = color;
+    out_color = vec4( 1, 0, 1, 1);
+		//texture2D(sampler, _uv );
 }
