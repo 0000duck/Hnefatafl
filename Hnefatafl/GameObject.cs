@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using OpenTK;
 using System.Drawing;
 using OpenTK.Graphics.OpenGL;
+using System.IO;
 
 namespace Hnefatafl {
     public class GameObject {
@@ -49,6 +50,8 @@ namespace Hnefatafl {
                 
         }
 
+
+        
 
 
     }

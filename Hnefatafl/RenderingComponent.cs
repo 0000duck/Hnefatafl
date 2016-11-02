@@ -10,7 +10,7 @@ using System.Drawing;
 namespace Hnefatafl {
     public class RenderingComponent: Component {
 
-        private int IBO;
+        private int IBO;//index buffer
 
         public CustomShaderProgram Shader {
             get;
@@ -24,7 +24,7 @@ namespace Hnefatafl {
 
         public RenderingComponent(GameObject parent) : base("RenderingComponent", parent) {
             this.Mesh = new Mesh();
-            
+            InitIBO();
 
 
         }
@@ -32,31 +32,47 @@ namespace Hnefatafl {
         public override void Update() {
             Render();
         }
+
+        private void InitIBO() {
+            GL.GenBuffers( 1, out IBO );
+            
+            
+        }
         
         private void Render() {
             this.Shader.Prepare();
-            
-            //unless dynamic mesh
-            //this.Shader.InitVBOs(this.Mesh);
-            
-            GL.GenBuffers(1, out IBO);
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, IBO);
-            GL.BufferData(BufferTarget.ElementArrayBuffer,
-                (IntPtr)(sizeof(int)*this.Mesh.Indices.Length),
-                this.Mesh.Indices,
-                BufferUsageHint.StaticDraw);
 
-            this.Shader.SetupVBOPointers();
-            
+            //unless dynamic mesh
+            //GL.DeleteBuffer( IBO );
+            //this.Shader.InitVBOs(this.Mesh);
+
+
+            this.Shader.SetupVBOPointers( this.Mesh );
+
+
+
+
             Matrix4 pvm = this.parent.modelmatrix * Game.view.viewmatrix * Game.view.frustummatrix;
 
             //set the uniforms of the shader
             this.Shader.SetPVMMatrix( ref pvm );
             this.Shader.LoadUniforms( ref this.parent );
-            
-            //bind ibo & draw
-            GL.DrawElements(PrimitiveType.Triangles, this.Mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
 
+
+            //bind ibo & draw
+            GL.BindBuffer( BufferTarget.ElementArrayBuffer, IBO );
+            GL.BufferData( BufferTarget.ElementArrayBuffer,
+                (IntPtr)(sizeof( int ) * this.Mesh.Indices.Length),
+                this.Mesh.Indices,
+                BufferUsageHint.StaticDraw );
+            GL.DrawElements( PrimitiveType.Triangles, this.Mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
+            /*
+            GL.Begin(PrimitiveType.Triangles);
+            GL.Vertex3( 0, 0, 0 );
+            GL.Vertex3( 0, 1, 0 );
+            GL.Vertex3( 1, 1, 0 );
+            GL.End();
+            //*/
             //cleanup
             this.Shader.EndRender();
 
