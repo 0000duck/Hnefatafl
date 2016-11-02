@@ -22,7 +22,7 @@ namespace Hnefatafl {
                 new Vector3(0.0f, 0.0f, 1.0f),
                 new Vector3(0.0f, 1.0f, 0.0f),
                 new Vector3(1.0f, 0.0f, 0.0f),
-                new Vector3(1.0f, 0.0f, 0.0f)
+                new Vector3(1.0f, 1.0f, 1.0f)
             };
             this.Renderer.Mesh.Indices = new int[] {
                 0, 1, 2,
