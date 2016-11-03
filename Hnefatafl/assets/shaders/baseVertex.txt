@@ -1,17 +1,18 @@
-#version 440
+#version 450
 
-in vec3 in_position;
-in vec3 in_normal;
-in vec2 in_uv;
+layout(location=0)in vec3 in_position;
+layout(location=1)in vec2 in_uv;
+layout(location=2)in vec3 in_normal;
 
 uniform mat4 pvm;
 
 out vec2 _uv;
+out vec3 _normal;
 
 void main(){
 	gl_Position =  pvm * vec4(in_position, 1.0);
     _uv = in_uv;
-	
+	_normal = in_normal;
 
 	
 }

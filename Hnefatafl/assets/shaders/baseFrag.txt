@@ -1,12 +1,13 @@
-#version 440
+#version 450
 
 in vec2 _uv;
+in vec3 _normal;
 
 uniform sampler2D sampler;
 
 out vec4 out_color;
 
 void main(){
-    out_color = vec4( 1, 0, 1, 1);
-		//texture2D(sampler, _uv );
+    out_color = //vec4( _uv.y, _uv.x, 1, 1);
+		 texture2D(sampler, _uv ) * vec4(_normal, 1);
 }

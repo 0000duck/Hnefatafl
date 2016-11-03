@@ -11,6 +11,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading;
 using System.Runtime.InteropServices;
+using System.Globalization;
 
 namespace Hnefatafl {
     public class Mesh {
@@ -18,7 +19,9 @@ namespace Hnefatafl {
             VERTEX = "v ",
             NORMAL = "vn",
             TEXTURE = "vt",
-            FACE = "f ";
+            FACE = "f ",
+            USEMTL = "usemtl ",
+            MTLLIB = "mtllib ";
 
         public int TextureHandle {
             get;
@@ -49,67 +52,10 @@ namespace Hnefatafl {
             get;
             set;
         }
+        public Material Material;
 
-        public int[] Indices {
-            get;
-            set;
-        }
-        public int[] TextureIndices {
-            get;
-            set;
-        }
-        public int[] NormalIndices {
-            get;
-            set;
-        }
 
-        public Vector3[] OrderedVertices {
-            get;
-            set;
-        }
-        public Vector2[] OrderedTexCoords {
-            get;
-            set;
-        }
 
-        public Vertex[] Vertices {
-            get;set;
-        }
-
-        public void OrderVertices() {
-            /*OrderedVertices = new Vector3[Indices.Length];
-            OrderedTexCoords = new Vector2[Indices.Length];
-            Vertices = new Vertex[Positions.Length];
-            int index = 0;
-            for (int i = 0; i < TextureIndices.Count(); i++) {
-                //Console.WriteLine( "b" + TexCoords[TextureIndices[i]] );
-                if (TextureIndices[i] >= 0) {
-                    OrderedTexCoords[i] = TexCoords[TextureIndices[i]];
-                } else {
-                    OrderedTexCoords[i] = new Vector2( 0, 1 );
-                }
-
-            }
-
-            for (int i = 0; i < Positions.Length; i++){
-                Vertex v = new Vertex();
-                v.Position = Positions[i];
-                v.TexCoord = TexCoords[i];
-                Vertices[i] = v;
-            }
-
-            OrderedVertices = new Vector3[] {
-                new Vector3(0,0,0),
-                new Vector3(1,0,0),
-                new Vector3(0,1,0)
-            };
-
-            OrderedTexCoords = new Vector2[]{
-                new Vector2( 0, 0 ),
-                new Vector2( 1, 0 ),
-                new Vector2( 0, 1 )
-            };*/
-        }
 
         public static Mesh LoadFromObjFile( string filepath ) {
             StreamReader file = new StreamReader( filepath );
@@ -125,24 +71,24 @@ namespace Hnefatafl {
             while ((line = file.ReadLine()) != null) {
                 if (line.StartsWith( VERTEX )) {
                     string[] parts = line.Split( ' ' );
-                    float x = (float)Decimal.Parse( parts[1], System.Globalization.NumberStyles.Float );
-                    float y = (float)Decimal.Parse( parts[2], System.Globalization.NumberStyles.Float );
-                    float z = (float)Decimal.Parse( parts[3], System.Globalization.NumberStyles.Float );
+                    float x = float.Parse( parts[1], CultureInfo.InvariantCulture);
+                    float y = float.Parse(parts[2], CultureInfo.InvariantCulture);
+                    float z = float.Parse(parts[3], CultureInfo.InvariantCulture);
                     Vector3 vertex = new Vector3( x, y, z );
                     positions.Add( vertex );
 
                 } else if (line.StartsWith( TEXTURE )) {
                     string[] parts = line.Split( ' ' );
-                    float u = (float)Decimal.Parse( parts[1], System.Globalization.NumberStyles.Float );
-                    float v = (float)Decimal.Parse( parts[2], System.Globalization.NumberStyles.Float );
+                    float u = float.Parse(parts[1], CultureInfo.InvariantCulture);
+                    float v = float.Parse(parts[2], CultureInfo.InvariantCulture);
                     Vector2 uv = new Vector2( u, v );
                     textures.Add( uv );
 
                 } else if (line.StartsWith( NORMAL )) {
                     string[] parts = line.Split( ' ' );
-                    float x = (float)Decimal.Parse( parts[1], System.Globalization.NumberStyles.Float );
-                    float y = (float)Decimal.Parse( parts[2], System.Globalization.NumberStyles.Float );
-                    float z = (float)Decimal.Parse( parts[3], System.Globalization.NumberStyles.Float );
+                    float x = float.Parse(parts[1], CultureInfo.InvariantCulture);
+                    float y = float.Parse(parts[2], CultureInfo.InvariantCulture);
+                    float z = float.Parse(parts[3], CultureInfo.InvariantCulture);
                     Vector3 normal = new Vector3( x, y, z );
                     normals.Add( normal );
                 } else if (line.StartsWith( FACE )) {
@@ -174,7 +120,6 @@ namespace Hnefatafl {
                                     tindex = 0;
                                 } else {
                                     tindex = int.Parse( rawFace[1] );
-                                    //Console.WriteLine( textures[tindex - 1] );
                                 }
                                 texIndices.Add( tindex-1 );
                                 
@@ -192,20 +137,26 @@ namespace Hnefatafl {
             }
             file.Close();
 
-            mesh.Positions = positions.ToArray();
-            mesh.TexCoords = textures.ToArray();
-            mesh.Normals = normals.ToArray();
-            mesh.Indices = indices.ToArray();
-            mesh.NormalIndices = normIndices.ToArray();
-            mesh.TextureIndices = texIndices.ToArray();
+            mesh.Positions = new Vector3[indices.Count()];
+            mesh.TexCoords = new Vector2[indices.Count()];
+            mesh.Normals = new Vector3[indices.Count()];
 
-            //mesh.OrderVertices();
-            foreach (Vector3 v in mesh.Positions) {
-                Console.WriteLine( v );
-            }
+            int it = 0;
             foreach(int i in indices) {
-                Console.WriteLine("o" + mesh.Positions[i] );
+                mesh.Positions[it] = positions[i];
+                it++;
             }
+            it = 0;
+            foreach (int i in texIndices) {
+                mesh.TexCoords[it] = textures[i];
+                it++;
+            }
+            it = 0;
+            foreach (int i in normIndices) {
+                mesh.Normals[it] = normals[i];
+                it++;
+            }
+
             return mesh;
         }
 
@@ -243,12 +194,8 @@ namespace Hnefatafl {
             return textureHandle;
 
         }
-    }
 
-    [StructLayout( LayoutKind.Explicit )]
-    public struct Vertex {
-        [FieldOffset(0)]public Vector3 Position;
-        [FieldOffset(12)]public Vector2 TexCoord;
-
+        
     }
+    
 }

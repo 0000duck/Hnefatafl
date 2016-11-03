@@ -12,11 +12,10 @@ namespace Hnefatafl {
     class Game : GameWindow {
 
         public static View view;
-
         List<GameObject> objects;
 
-        public Game (int width, int height) :base(width, height){
 
+        public Game (int width, int height) :base(width, height){
             GL.Enable(EnableCap.Texture2D);
             GL.Enable(EnableCap.DepthTest);
             GL.DepthFunc(DepthFunction.Less);
@@ -25,8 +24,6 @@ namespace Hnefatafl {
 
             view = new View(new Vector3(0,0,-10f), new Vector3(0,0,0), 1);
             objects = new List<GameObject>();
-
-            
 
             TestObject testObj = new TestObject(new Vector3(3,0,0), Vector3.Zero);
             TestObject testObj2 = new TestObject(new Vector3(-0.5f,-0.5f,0f), Vector3.Zero);
@@ -46,17 +43,11 @@ namespace Hnefatafl {
                 return 0;
             };
             testObj2.Update = (obj) => {
-                /*if (obj.position.Z > 8 || obj.position.Z < -8) {
-                    obj.forceVector.Y = -obj.forceVector.Y;
-                }*/
-                
                 obj.rotation.Y += 0.05f;
-                
-
                 return 0;
             };
-
-            //objects.Add(testObj);
+            
+            objects.Add(testObj);
             objects.Add(testObj2);
             
 
@@ -64,8 +55,6 @@ namespace Hnefatafl {
 
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
-
-            
 
         }
 
@@ -84,19 +73,12 @@ namespace Hnefatafl {
         protected override void OnRenderFrame(FrameEventArgs e) {
             base.OnRenderFrame(e);
             
-            this.SetRenderMode3D();
-
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-            //GL.BindTexture(TextureTarget.Texture2D, texture.ID);
-
             
-
             foreach(GameObject obj in objects) {
                 obj.Renderer.Update();
-
             }
-
+            
             GL.Flush();
             this.SwapBuffers();
 
@@ -111,31 +93,9 @@ namespace Hnefatafl {
             }
             GL.UseProgram( 0 );
             
-
-
         }
 
-        public void SetRenderMode2D() {
-            GL.PushMatrix();
-            GL.LoadIdentity();
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.Ortho(-1f, 1f, -1f, 1f, 1000f, -1000f);
-        }
 
-        public void SetRenderMode3D() {   
-            // :(         
-            //GL.MatrixMode(MatrixMode.Projection);
-            //GL.LoadMatrix(ref view.projectionmatrix);
-            //GL.Frustum(-1, 1, -1, 1, 0.1f, 1000);
-            //GL.LoadIdentity();
-
-            /*GL.MatrixMode(MatrixMode.Modelview);
-            GL.LoadMatrix(ref view.viewmatrix);
-            GL.Viewport(0, 0, this.Width, this.Height);
-            GL.LoadIdentity();//*/
-
-
-        }
 
     }
 }

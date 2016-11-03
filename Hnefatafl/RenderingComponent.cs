@@ -10,7 +10,9 @@ using System.Drawing;
 namespace Hnefatafl {
     public class RenderingComponent: Component {
 
-        private int IBO;//index buffer
+        private int VBO;
+        private int TBO;
+        private int NBO;
 
         public CustomShaderProgram Shader {
             get;
@@ -23,9 +25,6 @@ namespace Hnefatafl {
 
 
         public RenderingComponent(GameObject parent) : base("RenderingComponent", parent) {
-            this.Mesh = new Mesh();
-            InitIBO();
-
 
         }
 
@@ -33,51 +32,63 @@ namespace Hnefatafl {
             Render();
         }
 
-        private void InitIBO() {
-            GL.GenBuffers( 1, out IBO );
-            
-            
+        public void Init() {
+            GL.GenBuffers(1, out VBO);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
+            GL.BufferData(BufferTarget.ArrayBuffer,
+                (IntPtr)(Vector3.SizeInBytes * Mesh.Positions.Length),
+                (IntPtr)null,
+                BufferUsageHint.DynamicDraw);
+            GL.BufferSubData(BufferTarget.ArrayBuffer,
+                (IntPtr)0,
+                (IntPtr)(Vector3.SizeInBytes * Mesh.Positions.Length),
+                Mesh.Positions
+                );
+
+            GL.GenBuffers(1, out TBO);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, TBO);
+            GL.BufferData(BufferTarget.ArrayBuffer,
+                (IntPtr)(Vector2.SizeInBytes * Mesh.TexCoords.Length),
+                (IntPtr)null,
+                BufferUsageHint.DynamicDraw);
+            GL.BufferSubData(BufferTarget.ArrayBuffer,
+                (IntPtr)0,
+                (IntPtr)(Vector2.SizeInBytes * Mesh.TexCoords.Length),
+                Mesh.TexCoords
+                );
+
+            GL.GenBuffers(1, out NBO);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, NBO);
+            GL.BufferData(BufferTarget.ArrayBuffer,
+                (IntPtr)(Vector3.SizeInBytes * Mesh.Normals.Length),
+                (IntPtr)null,
+                BufferUsageHint.DynamicDraw);
+            GL.BufferSubData(BufferTarget.ArrayBuffer,
+                (IntPtr)0,
+                (IntPtr)(Vector3.SizeInBytes * Mesh.Normals.Length),
+                Mesh.Positions
+                );
+
         }
         
         private void Render() {
-            this.Shader.Prepare();
-
-            //unless dynamic mesh
-            //GL.DeleteBuffer( IBO );
-            //this.Shader.InitVBOs(this.Mesh);
-
-
-            this.Shader.SetupVBOPointers( this.Mesh );
-
-
-
+            this.Shader.Prepare(this.Mesh, VBO, TBO, NBO);
 
             Matrix4 pvm = this.parent.modelmatrix * Game.view.viewmatrix * Game.view.frustummatrix;
-
-            //set the uniforms of the shader
             this.Shader.SetPVMMatrix( ref pvm );
             this.Shader.LoadUniforms( ref this.parent );
 
+            GL.DrawArrays(PrimitiveType.Triangles, 0, Mesh.Positions.Length);
 
-            //bind ibo & draw
-            GL.BindBuffer( BufferTarget.ElementArrayBuffer, IBO );
-            GL.BufferData( BufferTarget.ElementArrayBuffer,
-                (IntPtr)(sizeof( int ) * this.Mesh.Indices.Length),
-                this.Mesh.Indices,
-                BufferUsageHint.StaticDraw );
-            GL.DrawElements( PrimitiveType.Triangles, this.Mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
-            /*
-            GL.Begin(PrimitiveType.Triangles);
-            GL.Vertex3( 0, 0, 0 );
-            GL.Vertex3( 0, 1, 0 );
-            GL.Vertex3( 1, 1, 0 );
-            GL.End();
-            //*/
-            //cleanup
+
             this.Shader.EndRender();
 
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+
+
         }
-    
+
         //to make the model move along the position of the object
         public void ApplyTransforms() {
             
@@ -86,9 +97,9 @@ namespace Hnefatafl {
         public override void Cleanup() {
             this.Shader.Cleanup();
             
-            GL.DeleteBuffer(IBO);
+            GL.DeleteBuffer(VBO);
+            GL.DeleteBuffer(TBO);
 
-            
         }
 
     }

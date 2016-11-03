@@ -13,9 +13,9 @@ namespace Hnefatafl {
     public class TestObject : GameObject{
 
         public TestObject(Vector3 position, Vector3 rotation) : base(position, rotation) {
-            Console.WriteLine(Directory.GetCurrentDirectory());
-            this.Renderer.Mesh = Mesh.LoadFromObjFile(@"assets/t.obj");
+            this.Renderer.Mesh = Mesh.LoadFromObjFile(@"assets/testobj.obj");
             this.Renderer.Mesh.TextureHandle = Mesh.LoadTexture(@"assets/images/Cube1_auv.jpg");
+            this.Renderer.Init();
             this.Renderer.Shader = ShaderManager.CompiledShaders.ContainsKey("BaseShader")? ShaderManager.CompiledShaders["BaseShader"] : new BaseShaderProgram("baseVertex.txt", "baseFrag.txt");
             this.Renderer.Shader.InitVBOs(this.Renderer.Mesh);
             

@@ -59,13 +59,12 @@ namespace Hnefatafl {
         public abstract void LoadUniforms( ref GameObject renderedObject );
         public abstract void InitVariablePipe();
         public abstract void Init();
-        public abstract void Prepare();
+        public abstract void Prepare(Mesh m, int VBO, int TBO, int NBO);
         public abstract void Cleanup();
         public abstract void EndRender();
 
         public abstract void GenerateVBOs();
         public abstract void InitVBOs(Mesh m);
-        public abstract void SetupVBOPointers(Mesh m);
         public virtual void GenerateVAO() {
             GL.GenVertexArrays(1, out this.vao);
         }
